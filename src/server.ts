@@ -1,6 +1,7 @@
-import env from "@/config/env";
-import app from "@/app";
+import app from "./app";
 
-app.listen(env.port, () => {
-  console.log(`🚀 Cuka Loc API rodando na porta ${env.port}`);
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Cuka Loc API rodando na porta ${PORT}`);
 });

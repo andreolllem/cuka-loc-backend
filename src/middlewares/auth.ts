@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import env from "@/config/env";
-import { JwtPayload } from "@/types";
+import { JwtPayload } from "../types";
+import { verifyJwt } from "../utils/jwt";
 
 declare global {
   namespace Express {
@@ -23,7 +22,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    const decoded = jwt.verify(token, env.jwtSecret) as JwtPayload;
+    const decoded = verifyJwt(token);
     req.user = decoded;
     next();
   } catch (error) {

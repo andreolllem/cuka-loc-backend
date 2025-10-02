@@ -1,5 +1,5 @@
-import { query } from "@/config/db";
-import { hashPassword } from "@/utils/password";
+import { query } from "../config/db";
+import { hashPassword } from "../utils/password";
 
 async function seed() {
   try {
@@ -9,7 +9,7 @@ async function seed() {
 
     const senhaHash = await hashPassword("senha123");
 
-    const usuarios = await query(
+    const usuarios = await query<{ id: number }>(
       `INSERT INTO usuarios (nome, email, senha, telefone)
        VALUES
          ('Ana Souza', 'ana@agenciacuka.com', $1, '+55 (11) 99999-0000'),
@@ -17,6 +17,12 @@ async function seed() {
        RETURNING id`,
       [senhaHash]
     );
+
+    if (usuarios.length < 2) {
+      throw new Error("Falha ao criar usuários iniciais");
+    }
+
+    const [ana, joao] = usuarios;
 
     await query(
       `INSERT INTO equipamentos (nome, categoria, descricao, preco_diaria, disponibilidade, imagem_url)
@@ -35,7 +41,7 @@ async function seed() {
        VALUES
          ($1, 1, CURRENT_DATE + 1, CURRENT_DATE + 3, 'confirmada', 1440.00),
          ($2, 4, CURRENT_DATE - 10, CURRENT_DATE - 7, 'concluida', 780.00)`,
-      [usuarios[0].id, usuarios[1].id]
+      [ana.id, joao.id]
     );
 
     console.log("🌱 Seed executado com sucesso");

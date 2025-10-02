@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import routes from "@/routes";
+import routes from "./routes";
 
 const app = express();
 
@@ -15,6 +15,10 @@ app.use(
 );
 app.use(express.json());
 app.use(morgan("dev"));
+
+app.get("/", (_req, res) => {
+  res.json({ status: "cuka-loc-backend", message: "API rodando" });
+});
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });

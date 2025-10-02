@@ -1,11 +1,27 @@
-import jwt from "jsonwebtoken";
-import env from "@/config/env";
-import { JwtPayload } from "@/types";
+import jwt, { type SignOptions } from "jsonwebtoken";
+import env from "../config/env";
+import { JwtPayload } from "../types";
 
-export function signJwt(payload: JwtPayload, expiresIn = "12h") {
-  return jwt.sign(payload, env.jwtSecret, { expiresIn });
+function isJwtPayload(payload: unknown): payload is JwtPayload {
+  if (payload && typeof payload === "object") {
+    const candidate = payload as Record<string, unknown>;
+    return typeof candidate.sub === "number" && typeof candidate.email === "string";
+  }
+  return false;
 }
 
-export function verifyJwt(token: string) {
-  return jwt.verify(token, env.jwtSecret) as JwtPayload;
+export function signJwt(
+  payload: JwtPayload,
+  expiresIn: SignOptions["expiresIn"] = "12h"
+) {
+  const options: SignOptions = { expiresIn };
+  return jwt.sign(payload, env.jwtSecret, options);
+}
+
+export function verifyJwt(token: string): JwtPayload {
+  const decoded = jwt.verify(token, env.jwtSecret);
+  if (!isJwtPayload(decoded)) {
+    throw new Error("Token inválido");
+  }
+  return decoded;
 }

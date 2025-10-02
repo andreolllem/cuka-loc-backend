@@ -24,7 +24,6 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^3.0.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
@@ -36,7 +35,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "prettier": "^3.2.5",
-    "tsx": "^4.7.0",
+    "tsx": "^4.20.6",
     "typescript": "^5.4.5"
   }
 }

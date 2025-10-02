@@ -1,5 +1,5 @@
-import { query } from "@/config/db";
-import { Equipment } from "@/types";
+import { query } from "../config/db";
+import { Equipment } from "../types";
 
 export async function listEquipments() {
   return query<Equipment>(

@@ -1,5 +1,11 @@
-import { query, transaction } from "@/config/db";
-import { Equipment, Rental, RentalStatus } from "@/types";
+import { query, transaction } from "../config/db";
+import type { PoolClient } from "pg";
+import { Equipment, Rental, RentalStatus } from "../types";
+
+type RentalWithNames = Rental & {
+  equipamento_nome: string;
+  usuario_nome?: string;
+};
 
 function calculateDays(dataInicio: string, dataFim: string) {
   const start = new Date(dataInicio);
@@ -8,13 +14,13 @@ function calculateDays(dataInicio: string, dataFim: string) {
   return Math.max(Math.ceil(diffTime / (1000 * 60 * 60 * 24)), 1);
 }
 
-async function fetchEquipment(client: any, equipamentoId: number) {
+async function fetchEquipment(client: PoolClient, equipamentoId: number) {
   const result = await client.query<Equipment>(`SELECT * FROM equipamentos WHERE id = $1`, [equipamentoId]);
   return result.rows[0];
 }
 
 export async function listRentalsByUser(userId: number) {
-  return query(
+  return query<RentalWithNames>(
     `SELECT l.id,
             l.usuario_id,
             l.equipamento_id,
@@ -33,7 +39,7 @@ export async function listRentalsByUser(userId: number) {
 }
 
 export async function listRentals() {
-  return query(
+  return query<RentalWithNames>(
     `SELECT l.id,
             l.usuario_id,
             l.equipamento_id,
@@ -92,7 +98,7 @@ export async function createRental({
   dataInicio: string;
   dataFim: string;
 }) {
-  return transaction(async (client: any) => {
+  return transaction(async (client) => {
     const disponibilidade = await checkAvailability({ equipamentoId, dataInicio, dataFim });
     if (!disponibilidade.disponivel) {
       throw new Error("Equipamento indisponível nas datas selecionadas");

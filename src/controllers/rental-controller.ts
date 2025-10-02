@@ -7,17 +7,18 @@ import {
   cancelRental,
   updateRentalStatus,
   checkAvailability
-} from "@/services/rental-service";
-import { createCheckoutSession } from "@/services/payment-service";
+} from "../services/rental-service";
+import { createCheckoutSession } from "../services/payment-service";
+import { serializeRental } from "../utils/serializers";
 
 export async function myRentals(req: Request, res: Response) {
   const rentals = await listRentalsByUser(req.user!.sub);
-  res.json({ locacoes: rentals });
+  res.json({ locacoes: rentals.map(serializeRental) });
 }
 
 export async function allRentals(_req: Request, res: Response) {
   const rentals = await listRentals();
-  res.json({ locacoes: rentals });
+  res.json({ locacoes: rentals.map(serializeRental) });
 }
 
 export async function verifyAvailability(req: Request, res: Response) {
@@ -51,7 +52,7 @@ export async function storeRental(req: Request, res: Response) {
       cancelUrl: `${req.body.cancelUrl ?? "http://localhost:3000"}/locacoes/nova`
     });
 
-    res.status(201).json({ locacao: rental, checkout });
+    res.status(201).json({ locacao: serializeRental(rental), checkout });
   } catch (error: any) {
     res.status(400).json({ mensagem: error.message });
   }
@@ -62,7 +63,7 @@ export async function cancel(req: Request, res: Response) {
   if (!rental) {
     return res.status(404).json({ mensagem: "Locação não encontrada" });
   }
-  res.json({ locacao: rental });
+  res.json({ locacao: serializeRental(rental) });
 }
 
 export async function updateStatus(req: Request, res: Response) {
@@ -72,5 +73,5 @@ export async function updateStatus(req: Request, res: Response) {
   }
 
   const rental = await updateRentalStatus(Number(req.params.id), req.body.status);
-  res.json({ locacao: rental });
+  res.json({ locacao: serializeRental(rental) });
 }

@@ -1,7 +1,7 @@
-import { query } from "@/config/db";
-import { comparePassword, hashPassword } from "@/utils/password";
-import { signJwt } from "@/utils/jwt";
-import { User } from "@/types";
+import { query } from "../config/db";
+import { comparePassword, hashPassword } from "../utils/password";
+import { signJwt } from "../utils/jwt";
+import { User } from "../types";
 
 export async function registerUser({
   nome,

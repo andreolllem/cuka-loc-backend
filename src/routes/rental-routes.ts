@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { authenticate } from "@/middlewares/auth";
+import { authenticate } from "../middlewares/auth";
 import {
   myRentals,
   verifyAvailability,
@@ -8,7 +8,7 @@ import {
   cancel,
   updateStatus,
   allRentals
-} from "@/controllers/rental-controller";
+} from "../controllers/rental-controller";
 
 const router = Router();
 

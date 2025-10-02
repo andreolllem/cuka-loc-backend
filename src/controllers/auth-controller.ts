@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { loginUser, registerUser } from "@/services/auth-service";
+import { loginUser, registerUser } from "../services/auth-service";
+import { serializeUser } from "../utils/serializers";
 
 export async function register(req: Request, res: Response) {
   const errors = validationResult(req);
@@ -10,7 +11,7 @@ export async function register(req: Request, res: Response) {
 
   try {
     const { token, usuario } = await registerUser(req.body);
-    res.status(201).json({ token, usuario });
+    res.status(201).json({ token, usuario: serializeUser(usuario) });
   } catch (error: any) {
     res.status(400).json({ mensagem: error.message });
   }
@@ -24,7 +25,7 @@ export async function login(req: Request, res: Response) {
 
   try {
     const { token, usuario } = await loginUser(req.body);
-    res.json({ token, usuario });
+    res.json({ token, usuario: serializeUser(usuario) });
   } catch (error: any) {
     res.status(401).json({ mensagem: error.message });
   }

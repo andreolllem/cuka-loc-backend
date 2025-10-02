@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { authenticate } from "@/middlewares/auth";
-import { index, show, store, update, destroy } from "@/controllers/equipment-controller";
+import { authenticate } from "../middlewares/auth";
+import { index, show, store, update, destroy } from "../controllers/equipment-controller";
 
 const router = Router();
 
